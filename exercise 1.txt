@@ -1,0 +1,528 @@
+[root@quickstart ~]# hdfs dfs
+Usage: hadoop fs [generic options]
+        [-appendToFile <localsrc> ... <dst>]
+        [-cat [-ignoreCrc] <src> ...]
+        [-checksum <src> ...]
+        [-chgrp [-R] GROUP PATH...]
+        [-chmod [-R] <MODE[,MODE]... | OCTALMODE> PATH...]
+        [-chown [-R] [OWNER][:[GROUP]] PATH...]
+        [-copyFromLocal [-f] [-p] [-l] <localsrc> ... <dst>]
+        [-copyToLocal [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+        [-count [-q] [-h] [-v] [-x] <path> ...]
+        [-cp [-f] [-p | -p[topax]] <src> ... <dst>]
+        [-createSnapshot <snapshotDir> [<snapshotName>]]
+        [-deleteSnapshot <snapshotDir> <snapshotName>]
+        [-df [-h] [<path> ...]]
+        [-du [-s] [-h] [-x] <path> ...]
+        [-expunge]
+        [-find <path> ... <expression> ...]
+        [-get [-p] [-ignoreCrc] [-crc] <src> ... <localdst>]
+        [-getfacl [-R] <path>]
+        [-getfattr [-R] {-n name | -d} [-e en] <path>]
+        [-getmerge [-nl] <src> <localdst>]
+        [-help [cmd ...]]
+        [-ls [-C] [-d] [-h] [-q] [-R] [-t] [-S] [-r] [-u] [<path> ...]]
+        [-mkdir [-p] <path> ...]
+        [-moveFromLocal <localsrc> ... <dst>]
+        [-moveToLocal <src> <localdst>]
+        [-mv <src> ... <dst>]
+        [-put [-f] [-p] [-l] <localsrc> ... <dst>]
+        [-renameSnapshot <snapshotDir> <oldName> <newName>]
+        [-rm [-f] [-r|-R] [-skipTrash] <src> ...]
+        [-rmdir [--ignore-fail-on-non-empty] <dir> ...]
+        [-setfacl [-R] [{-b|-k} {-m|-x <acl_spec>} <path>]|[--set <acl_spec> <pa
+        [-setfattr {-n name [-v value] | -x name} <path>]
+        [-setrep [-R] [-w] <rep> <path> ...]
+        [-stat [format] <path> ...]
+        [-tail [-f] <file>]
+        [-test -[defsz] <path>]
+        [-text [-ignoreCrc] <src> ...]
+        [-touchz <path> ...]
+        [-usage [cmd ...]]
+
+Generic options supported are
+-conf <configuration file>     specify an application configuration file
+-D <property=value>            use value for given property
+-fs <local|namenode:port>      specify a namenode
+-jt <local|resourcemanager:port>    specify a ResourceManager
+-files <comma separated list of files>    specify comma separated files to be co
+-libjars <comma separated list of jars>    specify comma separated jar files to
+-archives <comma separated list of archives>    specify comma separated archives
+
+The general command line syntax is
+bin/hadoop command [genericOptions] [commandOptions]
+
+[root@quickstart ~]# hdfs dfs -ls /
+Found 6 items
+drwxrwxrwx   - hdfs  supergroup          0 2017-10-23 10:29 /benchmarks
+drwxr-xr-x   - hbase supergroup          0 2019-03-02 22:28 /hbase
+drwxr-xr-x   - solr  solr                0 2017-10-23 10:32 /solr
+drwxrwxrwt   - hdfs  supergroup          0 2019-03-02 22:29 /tmp
+drwxr-xr-x   - hdfs  supergroup          0 2017-10-23 10:31 /user
+drwxr-xr-x   - hdfs  supergroup          0 2017-10-23 10:31 /var
+[root@quickstart ~]# sudo -u hdfs hadoop fs -mkdir /dualcore/test1
+mkdir: `/dualcore/test1': No such file or directory
+[root@quickstart ~]# sudo -u hdfs hadoop fs -mkdir /dualcore
+[root@quickstart ~]# sudo -u hdfs hadoop fs -mkdir /dualcore/test
+[root@quickstart ~]# sudo -u hdfs hadoop fs -chmod a+rwx /dualcore
+[root@quickstart ~]#  hdfs dfs -put /home/cloudera/training/data/access.log /dua
+put: `/home/cloudera/training/data/access.log': No such file or directory
+[root@quickstart ~]#  hdfs dfs -put /home/cloudera/training/data/access.log /dualcore/test/
+[root@quickstart ~]#  mysql --user=root --password=cloudera dualcore
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 493
+Server version: 5.1.73 Source distribution
+
+Copyright (c) 2000, 2013, Oracle and/or its affiliates. All rights reserved.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show tables;
++--------------------+
+| Tables_in_dualcore |
++--------------------+
+| customers          |
+| employees          |
+| order_details      |
+| orders             |
+| products           |
+| suppliers          |
++--------------------+
+6 rows in set (0.00 sec)
+
+mysql>  SELECT emp_id, fname, lname, state, salary FROM employees LIMIT 10;
++-----------+---------+-----------+-------+--------+
+| emp_id    | fname   | lname     | state | salary |
++-----------+---------+-----------+-------+--------+
+| AA1130960 | Amy     | Alicea    | KY    |  22329 |
+| AA1146303 | Anna    | Atkins    | CA    |  99645 |
+| AA1154964 | Annie   | Albritton | WV    |  26717 |
+| AA1352280 | Antoine | Aguirre   | AL    |  26078 |
+| AA1411429 | Arthur  | Andersen  | MS    |  17486 |
+| AA1418885 | Amanda  | Atkinson  | CA    |  22278 |
+| AA1510726 | Ann     | Askew     | KY    |  17220 |
+| AA1567042 | Anne    | Almonte   | CA    |  18566 |
+| AA1609979 | Anthony | Allen     | PA    |  20575 |
+| AA1636177 | Anthony | Aguilar   | CO    |  25262 |
++-----------+---------+-----------+-------+--------+
+10 rows in set (0.05 sec)
+
+mysql> quit
+Bye
+[root@quickstart ~]#  sudo -u hdfs hadoop fs -mkdir /dualcore
+mkdir: `/dualcore': File exists
+[root@quickstart ~]#  sudo -u hdfs hadoop fs -chmod a+rwx /dualcore
+[root@quickstart ~]# hdfs dfs -ls /dualcore
+Found 1 items
+drwxr-xr-x   - hdfs supergroup          0 2019-03-02 22:46 /dualcore/test
+[root@quickstart ~]#  sqoop import \ --connect jdbc:mysql://localhost/dualcore \ --username root --password cloudera \ --fields-terminated-by '\t' \ --warehouse-dir /dualcore \ --table customers
+Warning: /usr/lib/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+19/03/02 22:51:55 INFO sqoop.Sqoop: Running Sqoop version: 1.4.6-cdh5.13.0
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Error parsing arguments for import:
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument:  --connect
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument: jdbc:mysql://localhost/dualcore
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument:  --username
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument: root
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument: --password
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument: cloudera
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument:  --fields-terminated-by
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument: \t
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument:  --warehouse-dir
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument: /dualcore
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument:  --table
+19/03/02 22:51:55 ERROR tool.BaseSqoopTool: Unrecognized argument: customers
+
+Try --help for usage instructions.
+[root@quickstart ~]# sqoop import-all-tables \-m 1 \--connect jdbc:mysql://quickstart:3306/dualcore \--username=root \-password=cloudera \--hive-import \--hive-database dualcore
+Warning: /usr/lib/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+19/03/02 22:55:25 INFO sqoop.Sqoop: Running Sqoop version: 1.4.6-cdh5.13.0
+19/03/02 22:55:25 WARN tool.BaseSqoopTool: Setting your password on the command-line is insecure. Consider using -P instead.
+19/03/02 22:55:25 INFO tool.BaseSqoopTool: Using Hive-specific delimiters for output. You can override
+19/03/02 22:55:25 INFO tool.BaseSqoopTool: delimiters with --fields-terminated-by, etc.
+19/03/02 22:55:26 INFO manager.MySQLManager: Preparing to use a MySQL streaming resultset.
+19/03/02 22:55:28 INFO tool.CodeGenTool: Beginning code generation
+19/03/02 22:55:28 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM `customers` AS t LIMIT 1
+19/03/02 22:55:28 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM `customers` AS t LIMIT 1
+19/03/02 22:55:28 INFO orm.CompilationManager: HADOOP_MAPRED_HOME is /usr/lib/hadoop-mapreduce
+Note: /tmp/sqoop-root/compile/3df6b31a5f499c63ce0f7ef9dd3aada3/customers.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+19/03/02 22:55:36 INFO orm.CompilationManager: Writing jar file: /tmp/sqoop-root/compile/3df6b31a5f499c63ce0f7ef9dd3aada3/customers.jar
+19/03/02 22:55:36 WARN manager.MySQLManager: It looks like you are importing from mysql.
+19/03/02 22:55:36 WARN manager.MySQLManager: This transfer can be faster! Use the --direct
+19/03/02 22:55:36 WARN manager.MySQLManager: option to exercise a MySQL-specific fast path.
+19/03/02 22:55:36 INFO manager.MySQLManager: Setting zero DATETIME behavior to convertToNull (mysql)
+19/03/02 22:55:36 INFO mapreduce.ImportJobBase: Beginning import of customers
+19/03/02 22:55:36 INFO Configuration.deprecation: mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+19/03/02 22:55:38 INFO Configuration.deprecation: mapred.jar is deprecated. Instead, use mapreduce.job.jar
+19/03/02 22:55:41 INFO Configuration.deprecation: mapred.map.tasks is deprecated. Instead, use mapreduce.job.maps
+19/03/02 22:55:41 INFO client.RMProxy: Connecting to ResourceManager at /0.0.0.0:8032
+19/03/02 22:55:44 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:44 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:44 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:44 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:44 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:45 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:45 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:45 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:45 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:45 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:45 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:45 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:45 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:46 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:46 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:46 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:46 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:46 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:46 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:47 INFO db.DBInputFormat: Using read commited transaction isolation
+19/03/02 22:55:48 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:48 WARN hdfs.DFSClient: Caught exception
+java.lang.InterruptedException
+        at java.lang.Object.wait(Native Method)
+        at java.lang.Thread.join(Thread.java:1281)
+        at java.lang.Thread.join(Thread.java:1355)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.closeResponder(DFSOutputStream.java:967)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.endBlock(DFSOutputStream.java:705)
+        at org.apache.hadoop.hdfs.DFSOutputStream$DataStreamer.run(DFSOutputStream.java:894)
+19/03/02 22:55:48 INFO mapreduce.JobSubmitter: number of splits:1
+19/03/02 22:55:49 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_1551594358187_0001
+19/03/02 22:55:51 INFO impl.YarnClientImpl: Submitted application application_1551594358187_0001
+19/03/02 22:55:51 INFO mapreduce.Job: The url to track the job: http://quickstart.cloudera:8088/proxy/application_1551594358187_0001/
+19/03/02 22:55:51 INFO mapreduce.Job: Running job: job_1551594358187_0001
+19/03/02 22:56:31 INFO mapreduce.Job: Job job_1551594358187_0001 running in uber mode : false
+19/03/02 22:56:31 INFO mapreduce.Job:  map 0% reduce 0%
+19/03/02 22:57:03 INFO mapreduce.Job:  map 100% reduce 0%
+19/03/02 22:57:05 INFO mapreduce.Job: Job job_1551594358187_0001 completed successfully
+19/03/02 22:57:05 INFO mapreduce.Job: Counters: 30
+        File System Counters
+                FILE: Number of bytes read=0
+                FILE: Number of bytes written=170737
+                FILE: Number of read operations=0
+                FILE: Number of large read operations=0
+                FILE: Number of write operations=0
+                HDFS: Number of bytes read=87
+                HDFS: Number of bytes written=12577346
+                HDFS: Number of read operations=4
+                HDFS: Number of large read operations=0
+                HDFS: Number of write operations=2
+        Job Counters
+                Launched map tasks=1
+                Other local map tasks=1
+                Total time spent by all maps in occupied slots (ms)=29469
+                Total time spent by all reduces in occupied slots (ms)=0
+                Total time spent by all map tasks (ms)=29469
+                Total vcore-milliseconds taken by all map tasks=29469
+                Total megabyte-milliseconds taken by all map tasks=30176256
+        Map-Reduce Framework
+                Map input records=201375
+                Map output records=201375
+                Input split bytes=87
+                Spilled Records=0
+                Failed Shuffles=0
+                Merged Map outputs=0
+                GC time elapsed (ms)=266
+                CPU time spent (ms)=6680
+                Physical memory (bytes) snapshot=125321216
+                Virtual memory (bytes) snapshot=1511235584
+                Total committed heap usage (bytes)=60882944
+        File Input Format Counters
+                Bytes Read=0
+        File Output Format Counters
+                Bytes Written=12577346
+19/03/02 22:57:05 INFO mapreduce.ImportJobBase: Transferred 11.9947 MB in 84.2163 seconds (145.8455 KB/sec)
+19/03/02 22:57:05 INFO mapreduce.ImportJobBase: Retrieved 201375 records.
+19/03/02 22:57:05 INFO manager.SqlManager: Executing SQL statement: SELECT t.* FROM `customers` AS t LIMIT 1
+19/03/02 22:57:05 INFO hive.HiveImport: Loading uploaded data into Hive
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.13.0.jar!/hive-log4j.properties
+OK
+Time taken: 7.373 seconds
+Loading data to table dualcore.customers
+Table dualcore.customers stats: [numFiles=1, totalSize=12577346]
+OK
+Time taken: 1.139 seconds
+Note: /tmp/sqoop-root/compile/3df6b31a5f499c63ce0f7ef9dd3aada3/employees.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.13.0.jar!/hive-log4j.properties
+OK
+Time taken: 0.424 seconds
+Loading data to table dualcore.employees
+Table dualcore.employees stats: [numFiles=1, totalSize=6706056]
+OK
+Time taken: 1.546 seconds
+Note: /tmp/sqoop-root/compile/3df6b31a5f499c63ce0f7ef9dd3aada3/order_details.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.13.0.jar!/hive-log4j.properties
+OK
+Time taken: 0.226 seconds
+Loading data to table dualcore.order_details
+Table dualcore.order_details stats: [numFiles=1, totalSize=53331904]
+OK
+Time taken: 0.586 seconds
+Note: /tmp/sqoop-root/compile/3df6b31a5f499c63ce0f7ef9dd3aada3/orders.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.13.0.jar!/hive-log4j.properties
+OK
+Time taken: 0.184 seconds
+Loading data to table dualcore.orders
+Table dualcore.orders stats: [numFiles=1, totalSize=63192138]
+OK
+Time taken: 0.552 seconds
+Note: /tmp/sqoop-root/compile/3df6b31a5f499c63ce0f7ef9dd3aada3/products.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.13.0.jar!/hive-log4j.properties
+OK
+Time taken: 0.115 seconds
+Loading data to table dualcore.products
+Table dualcore.products stats: [numFiles=1, totalSize=62297]
+OK
+Time taken: 0.51 seconds
+Note: /tmp/sqoop-root/compile/3df6b31a5f499c63ce0f7ef9dd3aada3/suppliers.java uses or overrides a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+Logging initialized using configuration in jar:file:/usr/lib/hive/lib/hive-common-1.1.0-cdh5.13.0.jar!/hive-log4j.properties
+OK
+Time taken: 0.285 seconds
+Loading data to table dualcore.suppliers
+Table dualcore.suppliers stats: [numFiles=1, totalSize=6060]
+OK
+Time taken: 0.575 seconds
+[root@quickstart ~]# sqoop import \ --connect jdbc:mysql://localhost/dualcore \ --username root --P \ --fields-terminated-by '\t' \ --warehouse-dir /dualcore \ --table customers
+Warning: /usr/lib/sqoop/../accumulo does not exist! Accumulo imports will fail.
+Please set $ACCUMULO_HOME to the root of your Accumulo installation.
+19/03/02 23:17:26 INFO sqoop.Sqoop: Running Sqoop version: 1.4.6-cdh5.13.0
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Error parsing arguments for import:
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument:  --connect
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument: jdbc:mysql://localhost/dualcore
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument:  --username
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument: root
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument: --P
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument:  --fields-terminated-by
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument: \t
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument:  --warehouse-dir
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument: /dualcore
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument:  --table
+19/03/02 23:17:26 ERROR tool.BaseSqoopTool: Unrecognized argument: customers
+
+Try --help for usage instructions.
+[root@quickstart ~]# sudo upgrade sqoop;
+sudo: upgrade: command not found
+[root@quickstart ~]# sudo apt-get upgrade sqoop;
+sudo: apt-get: command not found
+[root@quickstart ~]#
+
+
+[cloudera@quickstart ~]$  beeline -u  jdbc:hive2://localhost:10000 
+scan complete in 18ms
+Connecting to jdbc:hive2://localhost:10000
+Connected to: Apache Hive (version 1.1.0-cdh5.13.0)
+Driver: Hive JDBC (version 1.1.0-cdh5.13.0)
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+Beeline version 1.1.0-cdh5.13.0 by Apache Hive
+0: jdbc:hive2://localhost:10000> select brand,price from products where brand="Gigabux" and price<1000;
+Error: Error while compiling statement: FAILED: SemanticException [Error 10001]: Line 1:24 Table not found 'products' (state=42S02,code=10001)
+0: jdbc:hive2://localhost:10000> select brand,price from dualcore.products where brand="Gigabux" and price<1000;
+INFO  : Compiling command(queryId=hive_20190303095353_ca542d74-f604-40eb-be3b-503830733c21): select brand,price from dualcore.products where brand="Gigabux" and price<1000
+INFO  : Semantic Analysis Completed
+INFO  : Returning Hive schema: Schema(fieldSchemas:[FieldSchema(name:brand, type:string, comment:null), FieldSchema(name:price, type:int, comment:null)], properties:null)
+INFO  : Completed compiling command(queryId=hive_20190303095353_ca542d74-f604-40eb-be3b-503830733c21); Time taken: 4.912 seconds
+INFO  : Concurrency mode is disabled, not creating a lock manager
+INFO  : Executing command(queryId=hive_20190303095353_ca542d74-f604-40eb-be3b-503830733c21): select brand,price from dualcore.products where brand="Gigabux" and price<1000
+INFO  : Completed executing command(queryId=hive_20190303095353_ca542d74-f604-40eb-be3b-503830733c21); Time taken: 0.014 seconds
+INFO  : OK
++----------+--------+--+
+|  brand   | price  |
++----------+--------+--+
+| Gigabux  | 669    |
+| Gigabux  | 959    |
+| Gigabux  | 399    |
+| Gigabux  | 399    |
+| Gigabux  | 419    |
+| Gigabux  | 409    |
+| Gigabux  | 629    |
+| Gigabux  | 749    |
+| Gigabux  | 619    |
+| Gigabux  | 509    |
++----------+--------+--+
+10 rows selected (8.358 seconds)
+0: jdbc:hive2://localhost:10000> 
+
+
+[root@quickstart ~]#  head /home/cloudera/training/data/ratings_2012.txt
+2012-05-21 12:52:48     1043182 1274362 5       This is truly fantastic!
+2012-10-14 01:36:07     1242853 1273879 2       The product quality was OK
+2012-10-14 02:41:50     1047430 1273799 2       Shoddy quality
+2012-10-14 10:10:05     1087455 1274476 4       Quality was passable
+2012-10-14 10:42:41     1170230 1273964 2       It was OK
+2012-10-14 19:12:33     1063130 1274734 4       It was OK
+2012-10-14 22:00:56     1031378 1274616 4       Quality was passable
+2012-10-15 00:27:47     1203215 1273850 5       Awesome product
+2012-10-15 01:14:26     1135616 1274218 4       Value of product was just alright
+2012-10-15 01:18:58     1145446 1274304 3       Average quality
+[root@quickstart ~]#  head /home/cloudera/training/data/ratings_2013.txt
+2013-01-01 19:59:03     1176180 1274178 3       Mediocre
+2013-01-01 21:33:30     1242246 1274448 3       Value of product was just alright
+2013-01-01 21:48:00     1027478 1274666 3       I felt is was OK
+2013-01-01 23:44:48     1111142 1274048 3       It was alright
+2013-01-01 23:59:07     1113534 1274676 3       I feel it is decent
+2013-01-02 00:05:23     1246663 1274267 4       You won't find another as good as this one.
+2013-01-02 00:23:44     1206218 1274628 4       OK value
+2013-01-02 00:27:24     1048350 1274232 3       It was just alright
+2013-01-02 00:41:10     1057630 1274673 1       Why does the red one cost ten times more than the others?
+2013-01-02 00:41:31     1139783 1274054 3       Mediocre
+[root@quickstart ~]#   hdfs dfs -put /home/cloudera/training/data/ratings_2012.txt /dualcore/
+[root@quickstart ~]#  hdfs dfs -put /home/cloudera/training/data/ratings_2013.txt /dualcore/
